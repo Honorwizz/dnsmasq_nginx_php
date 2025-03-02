@@ -1,0 +1,18 @@
+---
+- name: Установить dnsmasq
+  apt:
+    name: dnsmasq
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Скопировать конфигурацию dnsmasq
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+  notify: Перезапустить dnsmasq
+
+- name: Включить и запустить dnsmasq
+  service:
+    name: dnsmasq
+    enabled: yes
+    state: started

@@ -1,0 +1,61 @@
+---
+- name: Установить nginx и php-fpm
+  apt:
+    name:
+      - nginx
+      - php-fpm
+    state: present
+
+- name: Скопировать конфигурацию nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Перезапустить nginx
+
+- name: Создать корневую директорию веб-сайта
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Создать index.php с phpinfo()
+  copy:
+    content: "<?php phpinfo(); ?>"
+    dest: /var/www/html/index.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Включить и запустить nginx и php-fpm
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop:
+    - nginx
+    - php7.4-fpm  
+
+- name: Создать директорию для веб-контента
+  file:
+    path: /opt/nginx/ansible
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Создать index.php с phpinfo()
+  copy:
+    content: "<?php phpinfo(); ?>"
+    dest: /opt/nginx/ansible/index.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Скопировать конфигурацию nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Перезапустить nginx
+

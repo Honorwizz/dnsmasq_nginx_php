@@ -1,0 +1,26 @@
+---
+- name: Создание группы superusers и добавление пользователей
+  hosts: all
+  become: yes
+  tasks:
+    - name: Создать группу superusers
+      group:
+        name: superusers
+        state: present
+
+    - name: Создать пользователей user2 и user3 и добавить их в группу superusers
+      user:
+        name: "{{ item }}"
+        groups: superusers
+        append: yes
+        state: present
+      loop:
+        - user2
+        - user3
+
+    - name: Разрешить группе superusers становиться root через sudo
+      lineinfile:
+        path: /etc/sudoers.d/superusers
+        line: "%superusers ALL=(ALL) ALL"
+        create: yes
+        validate: "visudo -cf %s"
