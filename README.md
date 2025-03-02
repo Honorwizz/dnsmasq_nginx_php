@@ -100,6 +100,3 @@ ansible-playbook -i hosts.yml superusers_setup.yml
 ```bash
 ansible-playbook -i hosts.yml nginx_php_setup.yml
 ```
-### Изменение DocumentRoot и обновление конфигурации nginx:
-```bash
-ansible-playbook -i hosts.yml nginx_php_advanced.yml
